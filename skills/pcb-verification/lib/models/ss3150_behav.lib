@@ -1,0 +1,4 @@
+* SS3150 (3 A 150 V Schottky, MDD) behavioural: VF 0.95 V max at 3 A (MDD SS32–SS3200 datasheet),
+* IFSM 80 A (8.3 ms). BV set to 150 V (VRRM) to spot exceeding the reverse rating.
+* How it was checked: DC run at the published datasheet points.
+.model DSS3150 D(IS=1.8p N=1.1 RS=0.05 BV=150 IBV=0.3m CJO=180p)

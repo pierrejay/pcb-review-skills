@@ -1,0 +1,9 @@
+{
+  "name": "pcb-review-skills",
+  "description": "PCB design-review skills: cleanup of EasyEDA Pro imports into KiCad, fidelity of fabrication outputs, and verification by calculation and simulation (impedance, timing, power, surge/ESD, thermal, EMC pre-estimates), one skill per check.",
+  "version": "1.14.0",
+  "author": {
+    "name": "Pierre Jay"
+  },
+  "license": "MIT"
+}

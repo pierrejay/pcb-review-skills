@@ -1,0 +1,14 @@
+* TVS3300DRVR(ES) / ESTVS3300DRVR (Hunan Jingxin, equivalent of the TI TVS3300) behavioural, datasheet Rev-1.1:
+* VRWM 33 V; VBR 37 / 38.7 / 40 V at 1 mA; VC 38.2 typ / 40.0 max at 24 A, 41.0 max at 35 A, 42.0 max at 50 A (8/20);
+* RDYN 30 mΩ; IPP 50 A (8/20). A flat clamp: VC typ at 24 A is below VBR typ, which no diode law reproduces together;
+* the models follow the clamping region. Law BV + RS I + NBV Vt ln(I / IBV), Vt 25.85 mV (power_input_models): MAX by
+* tvs_fit_exact on 40.0 V at 24 A and 41.0 V at 35 A, NBV 1 (RS 90.0 mΩ, BV 37.58 V), through or above every published
+* maximum (42.36 V at 50 A for 42.0), interpolating between them; under 24 A it stays below the 40 V VBR max at 1 mA,
+* which a diode law cannot hold flat up to 24 A; TYP with RS = RDYN 30 mΩ through 38.2 V at 24 A (BV 37.22 V; VBR typ
+* 38.7 V at 1 mA not reproduced: lower, so more current in the part).
+* Cathode = IO (protected rail), anode = GND.
+* How it was checked: ngspice 47 DC sweep (.dc, 1 A steps) at the published points: TYP 38.20 V at 24 A; MAX
+* 40.00 V at 24 A, 41.00 V at 35 A, 42.36 V at 50 A; 1 mA: 37.22 / 37.58 V. A lone `op` at 24 A can
+* settle 0.24 V off: read the sweep.
+.model DTVS3300_TYP D(IS=2.5n N=1.5 RS=0.030 BV=37.22 IBV=1m NBV=1 CJO=113p)
+.model DTVS3300_MAX D(IS=2.5n N=1.5 RS=0.09002 BV=37.579 IBV=1m NBV=1 CJO=113p)

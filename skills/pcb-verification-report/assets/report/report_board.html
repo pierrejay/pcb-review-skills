@@ -1,0 +1,38 @@
+{% extends "report_base.html" %}
+{#- Verification report of <board>: skeleton to copy into <board>/verification/scripts/report_template.html.
+    The base (cover, summary, open points, annex, styles) is in report_base.html.
+    One chapter = one <section class="test">: title, crit(objective, method, sourced criterion), figure(s), table,
+    verdict box = compliance with the rule THEN quantified effect. Verdict: {{ verdict(vd["n"]) }}, never
+    verdict(OK) hard-coded (the rendering fails); the text of the box is made conditional on vd["n"] if it depends on it. Numbers: {{ x|num(n) }} or {{ x|numg }} (separator = DEC_SEP); metric units only. -#}
+{% from "report_macros.html" import crit, figure, map_img, verdict %}
+
+{% block conclusion %}
+<b>Conclusion.</b> [blocking deviations or not; each deviation from the rule with its quantified effect; each
+reservation and how to lift it]. Reading the verdicts: each test distinguishes <b>compliance with the rule</b> and
+the <b>quantified effect</b>.
+{% endblock %}
+
+{% block tests %}
+<section class="test">
+<h2>1. Synchronous interface timing (demo chapter: replace with the board's tests)</h2>
+{{ crit("Setup/hold of each line between the driver and the receiver, real clock included.",
+        "Routed lengths, [propagation delay] ps/mm ([stackup]), outputs and windows of the datasheets at the worst case.",
+        "Positive margins at [clock frequency] (datasheet X §y.z).") }}
+{% if timing.incomplete is defined %}
+<div class="box">{{ verdict(vd["1"]) }} — the calculation refused its input: {{ timing.incomplete }}</div>
+{% else %}
+{{ figure(fig_margins, "Fig. 1-1 — Margins per line, worst case of the datasheets.") }}
+<table><tr><th>Line</th><th class="n">Length</th><th class="n">Setup</th><th class="n">Hold</th></tr>
+{% for n, b in timing.sync_budget.items() %}<tr><td>{{ n }}</td><td class="n">{{ b.length_mm|num(1) }} mm</td><td class="n">{{ b.setup_margin_ns|num(2) }} ns</td><td class="n">{{ b.hold_margin_ns|num(2) }} ns</td></tr>{% endfor %}</table>
+<div class="box">{{ verdict(vd["1"]) }} — setup margins ≥ {{ setup_min|num(2) }} ns, hold ≥ {{ hold_min|num(2) }} ns
+on all lines (hold: estimate E1).</div>
+{% endif %}
+</section>
+{% endblock %}
+
+{% block traceability %}
+<tr><td>Cleanup</td><td>[optional, when the board was imported] <code>[cleanup notes]</code>: ERC, DRC, parity; fidelity to the original exports.</td></tr>
+<tr><td>Scripts</td><td><code>verification/scripts/</code>: …</td></tr>
+<tr><td>Detail</td><td><code>verification/VERIFICATION.md</code></td></tr>
+<tr><td>References</td><td><code>verification/refs/</code>: …</td></tr>
+{% endblock %}

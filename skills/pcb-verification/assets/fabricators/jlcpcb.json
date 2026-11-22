@@ -1,0 +1,26 @@
+{
+  "fabricator": "JLCPCB",
+  "what": "Cross-section parameters the fabricator publishes for its impedance calculation, plus the plating it applies; everything a check needs besides the stackup. Another fabricator = another file of the same keys, read by the board scripts and asserted against the constants they use.",
+  "source": "JLCPCB impedance calculator assumptions and capabilities pages, published in mil and converted at reading (1 mil = 25.4 µm); re-read on the fabricator's site at each review and date the reading",
+  "read_on": "2026-10",
+  "units": "mm",
+  "outer_copper_base": 0.035,
+  "outer_copper_finished": 0.0406,
+  "inner_copper": 0.0152,
+  "etch_top_width_reduction": 0.0178,
+  "etch_tolerance_per_flank": 0.010,
+  "solder_mask_on_laminate": 0.0305,
+  "solder_mask_on_copper": 0.0152,
+  "solder_mask_er": 3.8,
+  "via_plating": 0.018,
+  "stackups": {
+    "JLC04161H-3313": "../stackups/JLC04161H-3313.json",
+    "JLC04161H-7628": "../stackups/JLC04161H-7628.json"
+  },
+  "notes": [
+    "outer_copper_finished is the base copper plus plating, the thickness the impedance solver uses for an outer track; the trapezoid top width is the base width minus etch_top_width_reduction",
+    "solder_mask_on_laminate is c1 of the 2D solver, solder_mask_on_copper is c2: convert against the definition of each parameter, not its position in a list",
+    "via_plating is the barrel thickness of the DC-drop mesh, the average hole plating JLCPCB publishes (18 µm, capabilities page, read 2026-11); the hole size of the design (KiCad's via or pad hole, written as is in the drill file) is the FINISHED hole, after plating (JLCPCB capabilities: the tolerance on plated holes, +0.13/-0.08 mm, applies to the finished hole size around the hole size of the file), so the barrel's mean diameter is hole + plating",
+    "etch_tolerance_per_flank is the width excursion explored on a few cross-sections (±10 µm per flank), not a guaranteed figure"
+  ]
+}

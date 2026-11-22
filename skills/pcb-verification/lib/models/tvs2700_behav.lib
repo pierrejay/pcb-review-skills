@@ -1,0 +1,12 @@
+* TVS2700 behavioural (the TI PSpice model SLVMCD3 is encrypted, unreadable by ngspice)
+* Fitted on datasheet SLVSED6: VBR 31.2 V typ (29.3–33.9) at 1 mA; VCLAMP 32.5 V typ /
+* 34.1 V max at 40 A 8/20; RDYN 30 mΩ; VF 0.5 V at 1 mA; VFCLAMP 2 V typ at 40 A.
+* Law BV + RS I + NBV Vt ln(I / IBV), Vt 25.85 mV (power_input_models): TYP by tvs_fit_exact on
+* 31.2 V at 1 mA and 32.5 V at 40 A with NBV 1 (RS 25.65 mΩ, near RDYN; NBV 4 would leave 5 mΩ);
+* MAX with the same RS and BV = 34.1 − 40 RS − Vt ln(40 / 1m) = 32.8 V.
+* Cathode = IO (protected rail), anode = GND.
+* How it was checked: tvs_model_voltage at the published points: TYP 31.20 V at 1 mA, 32.50 V at
+* 40 A; MAX 32.80 V at 1 mA (inside 29.3–33.9), 34.10 V at 40 A; forward law 0.50 V at 1 mA,
+* 1.94 V at 40 A; ngspice 47 DC sweep: TYP 31.20 V at 1 mA, 32.51 V at 40 A; MAX 32.80 V, 34.11 V.
+.model DTVS2700_TYP D(IS=2.5n N=1.5 RS=0.02565 BV=31.2 IBV=1m NBV=1 CJO=200p)
+.model DTVS2700_MAX D(IS=2.5n N=1.5 RS=0.02565 BV=32.8 IBV=1m NBV=1 CJO=200p)

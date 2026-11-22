@@ -1,0 +1,120 @@
+{#- Common base of the verification reports (skill pcb-verification-report, assets/report/).
+    Copied as is into <board>/verification/scripts/; the board's template does {% extends "report_base.html" %}
+    and fills the blocks: conclusion, tests (one <section class="test"> per test), traceability, optional details
+    (full tables of sweeps and matrices, in the annex).
+    Expected context: F (FIXED: board, title, source, stackup, reproduction, open_points, assumptions, optional scope
+    [(requirement, value, status)], optional estimates [(id, subject, value retained, basis, [test nos.],
+    how to confirm it)], optional accepted_deviations [(mark, [test nos.], rule, finding, effect, decision,
+    to be reviewed if, {test no.: value accepted})], optional nature (replaces the default text)),
+    summary [(no., test, criterion, result, verdict)], git, date; supplied by render(): vd (no. → verdict),
+    est_refs (no. → estimate ids), L (base texts in the current language, report_base.TEXTS).
+    Macros (crit, figure, map_img, verdict): {% from "report_macros.html" import crit, figure, map_img, verdict %}
+    in the board's template. -#}
+
+<!doctype html>
+<html lang="{{ L.html_lang }}">
+<head>
+<meta charset="utf-8">
+<title>{{ L.report }} — {{ F.board }}</title>
+<style>
+  @page { size: A4; margin: 16mm 15mm 18mm 15mm;
+    @bottom-left { content: "{{ F.board }} — {{ L.footer }} — {{ date }}"; font: 7.5pt "Helvetica Neue", Arial, sans-serif; color: #52514e; }
+    @bottom-right { content: "{{ L.page }} " counter(page) " / " counter(pages); font: 7.5pt "Helvetica Neue", Arial, sans-serif; color: #52514e; } }
+  @page :first { @bottom-left { content: none; } }
+  :root { --ink: #0b0b0b; --ink2: #52514e; --rule: #dddcd8; --soft: #f4f3f0; --ok: #0ca30c; --res: #b07700; --nok: #d03b3b; --mes: #2a78d6; }
+  body { font: 9.2pt/1.42 "Helvetica Neue", Arial, sans-serif; color: var(--ink); background: #fff; margin: 0; }
+  h1 { font-size: 21pt; margin: 0 0 4mm; letter-spacing: -0.2pt; }
+  h2 { font-size: 13pt; margin: 0 0 2mm; padding-top: 1mm; border-top: 1.5pt solid var(--ink); }
+  h3 { break-after: avoid; font-size: 9.6pt; margin: 3.5mm 0 1.2mm; color: var(--ink); text-transform: uppercase; letter-spacing: 0.4pt; }
+  p { margin: 0 0 2mm; } ul { margin: 0 0 2mm; padding-left: 5mm; } li { margin-bottom: 0.8mm; }
+  .sub { color: var(--ink2); font-size: 10pt; margin-bottom: 8mm; }
+  table { border-collapse: collapse; width: 100%; margin: 1.5mm 0 3mm; font-size: 8.2pt; page-break-inside: avoid; }
+  th { text-align: left; font-weight: 600; border-bottom: 1pt solid var(--ink); padding: 1.2mm 1.5mm; vertical-align: bottom; }
+  td { border-bottom: 0.5pt solid var(--rule); padding: 1.1mm 1.5mm; vertical-align: top; }
+  td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .meta td:first-child { color: var(--ink2); width: 32mm; }
+  .verdict { font-weight: 600; white-space: nowrap; }
+  .v-ok { color: var(--ok); } .v-acc { color: var(--ok); } .v-res { color: var(--res); } .v-nok { color: var(--nok); } .v-mes { color: var(--mes); } .v-inc { color: var(--nok); }
+  .box { background: var(--soft); padding: 2.5mm 3mm; margin: 2mm 0 3mm; border-left: 2pt solid var(--ink2); page-break-inside: avoid; }
+  .box.v { border-left-color: var(--ink); }
+  figure { margin: 1mm 0 3mm; page-break-inside: avoid; } figure svg, figure img { width: 100%; height: auto; }
+  figure img.map { width: auto; max-width: 100%; max-height: 92mm; display: block; margin: 0 auto; }
+  figcaption { font-size: 7.8pt; color: var(--ink2); margin-top: 0.8mm; }
+  .test { page-break-before: always; }
+  .crit { display: grid; grid-template-columns: 26mm 1fr; gap: 0.6mm 3mm; font-size: 8.6pt; margin-bottom: 2mm; }
+  .crit div:nth-child(odd) { color: var(--ink2); }
+  .small { font-size: 7.8pt; color: var(--ink2); }
+  code { font: 7.8pt Menlo, monospace; }
+  {% block style %}{% endblock %}
+</style>
+</head>
+<body>
+
+<h1>{{ L.report }}</h1>
+<div class="sub">{{ F.title }} — <b>{{ F.board }}</b></div>
+<table class="meta">
+  <tr><td>{{ L.board }}</td><td>{{ F.source }}</td></tr>
+  <tr><td>{{ L.state }}</td><td>{{ L.git_repo }} <code>{{ git }}</code></td></tr>
+  <tr><td>{{ L.stackup }}</td><td>{{ F.stackup }}</td></tr>
+  <tr><td>{{ L.date }}</td><td>{{ date }}</td></tr>
+  <tr><td>{{ L.reproduction }}</td><td><code>{{ F.reproduction }}</code> {{ L.in_dir }} <code>verification/</code></td></tr>
+</table>
+
+<p class="small">{% if F.nature is defined %}{{ F.nature }}{% else %}{{ L.nature }}{% endif %}</p>
+
+{% if F.scope is defined %}
+<h3>{{ L.scope }}</h3>
+<table><tr>{% for c in L.scope_cols %}<th>{{ c }}</th>{% endfor %}</tr>
+{% for e, v, st in F.scope %}<tr><td>{{ e }}</td><td>{{ v }}</td><td class="small">{{ st }}</td></tr>{% endfor %}</table>
+{% endif %}
+
+<h3>{{ L.summary }}</h3>
+<table>
+  <tr>{% for c in L.summary_cols %}<th>{{ c }}</th>{% endfor %}</tr>
+  {% for n, t, c, r, v in summary %}
+  <tr><td>{{ n }}{% if n in est_refs %}<sup class="small">&nbsp;{{ est_refs[n]|join(",") }}</sup>{% endif %}</td><td>{{ t }}</td><td>{{ c }}</td><td>{{ r }}</td><td class="verdict v-{{ v[0] }}">{{ v[1] }}{% if n in acc_refs %}<sup class="small">&nbsp;{{ acc_refs[n]|join(",") }}</sup>{% endif %}</td></tr>
+  {% endfor %}
+</table>
+{% if acc_refs %}<p class="small">{{ L.accepted_note }}</p>{% endif %}
+<div class="box v">{% block conclusion %}{% endblock %}</div>
+
+{% if F.accepted_deviations is defined and F.accepted_deviations %}
+<h3>{{ L.accepted }}</h3>
+<table><tr>{% for c in L.accepted_cols %}<th>{{ c }}</th>{% endfor %}</tr>
+{% for i, t, rule, finding, effect, decision, review, _value in F.accepted_deviations %}<tr><td>{{ i }}</td><td>{{ t|join(", ") }}</td><td class="small">{{ rule }}</td><td>{{ finding }}</td><td class="small">{{ effect }}</td><td class="small">{{ decision }}</td><td class="small">{{ review }}</td></tr>{% endfor %}</table>
+{% endif %}
+
+{% if F.estimates is defined and F.estimates %}
+<h3>{{ L.estimates }}</h3>
+<table><tr>{% for c in L.estimates_cols %}<th>{{ c }}</th>{% endfor %}</tr>
+{% for i, s, v, b, t, c in F.estimates %}<tr><td>{{ i }}</td><td>{{ s }}</td><td>{{ v }}</td><td class="small">{{ b }}</td><td>{{ t|join(", ") }}</td><td class="small">{{ c }}</td></tr>{% endfor %}</table>
+{% endif %}
+
+<h3>{{ L.open_points }}</h3>
+<table>
+  <tr>{% for c in L.open_points_cols %}<th>{{ c }}</th>{% endfor %}</tr>
+  {% for s, q, n in F.open_points %}<tr><td>{{ s }}</td><td>{{ q }}</td><td>{{ n }}</td></tr>{% endfor %}
+</table>
+{% if F.get("recommendations") %}
+<h3>{{ L.recommendations }}</h3>
+<p class="small">{{ L.recommendations_note }}</p>
+<table>
+  <tr>{% for c in L.recommendations_cols %}<th>{{ c }}</th>{% endfor %}</tr>
+  {% for w, n, r, g in F.recommendations %}<tr><td>{{ w }}</td><td>{{ n }}</td><td>{{ r }}</td><td>{{ g }}</td></tr>{% endfor %}
+</table>
+{% endif %}
+
+{% block tests %}{% endblock %}
+
+<section class="test">
+<h2>{{ L.annex }}</h2>
+<h3>{{ L.assumptions }}</h3>
+<ul>{% for h in F.assumptions %}<li>{{ h }}</li>{% endfor %}</ul>
+<h3>{{ L.traceability }}</h3>
+<table class="meta">
+{% block traceability %}{% endblock %}
+</table>
+{% block details %}{% endblock %}
+</section>
+</body>
+</html>

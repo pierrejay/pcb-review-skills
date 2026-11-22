@@ -1,0 +1,9 @@
+.DS_Store
+__pycache__/
+*.pyc
+.venv/
+*.bak
+.idea/
+.vscode/
+demo_report/
+skills/pcb-verification/lib/testboards/*.kicad_prl

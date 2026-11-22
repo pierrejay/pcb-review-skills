@@ -1,0 +1,5 @@
+* SS310 (3 A 100 V Schottky, MDD) behavioural: VF 0.85 V max at 3 A (MDD SS32–SS3200 datasheet),
+* IFSM 80 A (8.3 ms), CJ ~180 pF. BV set to 100 V (VRRM) to spot exceeding the reverse rating.
+* Model VF: 0.61 V at 0.1 A, 0.66 V at 0.4 A, 0.85 V at 3 A.
+* How it was checked: DC run at the published datasheet points.
+.model DSS310 D(IS=61p N=1.1 RS=0.05 BV=100 IBV=0.3m CJO=180p)

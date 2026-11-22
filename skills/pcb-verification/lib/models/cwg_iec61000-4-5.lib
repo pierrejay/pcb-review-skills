@@ -1,0 +1,17 @@
+* IEC 61000-4-5 combination wave generator (1.2/50 µs OC, 8/20 µs SC, 2 Ω), fitted by cwg_fit.py
+* OC 1.20/50.0 µs ; SC 7.82/20.4 µs ; Ûoc/Îsc = 2.000 Ω
+* Usage: XCWG out ref CWG params: UPK=<open-circuit peak voltage, signed> TD=<delay>
+.subckt CWG out ref params: UPK=1000 TD=1u
+* before TD: Cc charged to U0 by Vchg (S1 closed), output isolated (S2 open); at TD: S1 opens, S2 closes
+Vchg a ref {UPK*1.067880}
+S1 a nc c1 ref SWC
+Vc1 c1 ref PWL(0 1 {TD} 1 {TD+1n} 0)
+S2 nc nm c2 ref SWC
+Vc2 c2 ref PWL(0 0 {TD} 0 {TD+1n} 1)
+.model SWC SW(Ron=1m Roff=1e12 Vt=0.5 Vh=0)
+Cc nc ref 6.61818e-06
+Rs1 nc ref 17.3004
+Rm nm nl 0.94445
+Lr nl out 1.03462e-05
+Rs2 out ref 24.7151
+.ends CWG

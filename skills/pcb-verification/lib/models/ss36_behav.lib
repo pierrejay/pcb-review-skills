@@ -1,0 +1,4 @@
+* SS36 (3 A 60 V Schottky, MDD) behavioural: VF ≈ 0.70 V at 3 A (datasheet), IFSM 80 A (8.3 ms).
+* BV set to 60 V to spot exceeding the reverse rating (Schottky not guaranteed in avalanche).
+* How it was checked: DC run at the published datasheet points.
+.model DSS36 D(IS=12n N=1.1 RS=0.05 BV=60 IBV=0.5m CJO=250p)

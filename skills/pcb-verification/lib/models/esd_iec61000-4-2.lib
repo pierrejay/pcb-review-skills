@@ -1,0 +1,12 @@
+* IEC 61000-4-2 ESD generator (contact), fitted by esd_fit.py on annex B of the standard
+* 2 Ω target, per kV: Ip 3.71 A, tr 0.88 ns, I30 2.08 A, I60 1.06 A
+* Usage: XESD out ref ESDGUN params: VCH=<charge voltage, signed>; ".tran ... uic" analysis mandatory
+* Cs and Cf start charged to VCH (initial condition): the discharge starts at t = 0.
+.subckt ESDGUN out ref params: VCH=4000
+Cs ns ref 150p IC={VCH}
+Cf nf ref 8.55701e-12 IC={VCH}
+Rs ns ls1 330
+Ls ls1 out 2.31478e-06
+Rf nf lf1 204.573
+Lf lf1 out 1.71869e-07
+.ends ESDGUN

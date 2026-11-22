@@ -1,0 +1,108 @@
+(version 1)
+# JLCPCB design rules, 35 um (1 oz) outer copper, for KiCad 10.
+# Values: JLCPCB PCB capabilities page (jlcpcb.com/capabilities/pcb-capabilities), read 2026-11-22; re-read it
+# before ordering. Where the page gives a 2-layer and a multilayer value, the 2-layer one is active and the
+# multilayer one follows in a comment: swap them for a 4-layer board.
+# KiCad rejects a whole .kicad_dru silently when one line is invalid: open Board Setup > Custom Rules and check it
+# after every edit. When several rules apply to the same pair of items, the last one in the file wins.
+
+# --- Copper features -----------------------------------------------------------------------------------------
+
+(rule "JLC track width and spacing"
+	(constraint track_width (min 0.1mm))
+	(constraint clearance (min 0.1mm))
+	(condition "A.Type == 'track'"))
+# multilayer: 0.09mm / 0.09mm
+
+(rule "JLC pad to track"
+	(constraint clearance (min 0.1mm))
+	(condition "A.Type == 'pad' && B.Type == 'track'"))
+
+(rule "JLC SMD pad to pad, different nets"
+	(constraint clearance (min 0.15mm))
+	(condition "A.Type == 'pad' && B.Type == 'pad' && A.Net != B.Net"))
+
+# --- Holes ---------------------------------------------------------------------------------------------------
+
+(rule "JLC drill range"
+	(constraint hole_size (min 0.15mm) (max 6.3mm)))
+
+# A via smaller than 0.3 mm hole or 0.45 mm diameter costs extra; the published minimum is 0.15 / 0.25 mm,
+# to be selected as an option when ordering.
+(rule "JLC via, no extra cost"
+	(constraint hole_size (min 0.3mm))
+	(constraint via_diameter (min 0.45mm))
+	(constraint disallow buried_via)
+	(condition "A.Type == 'via'"))
+
+(rule "JLC plated pad annular ring"
+	(constraint annular_width (min 0.18mm))
+	(condition "A.Type == 'pad' && A.isPlated()"))
+# multilayer: 0.15mm (recommended 0.25mm on 2 layers, 0.2mm multilayer)
+
+(rule "JLC non-plated hole"
+	(constraint hole_size (min 0.5mm))
+	(condition "A.Type == 'pad' && !A.isPlated()"))
+
+(rule "JLC plated slot"
+	(constraint hole_size (min 0.5mm))
+	(condition "A.isPlated() && A.Hole_Size_X != A.Hole_Size_Y"))
+# multilayer: 0.35mm
+
+(rule "JLC non-plated slot"
+	(constraint hole_size (min 1.0mm))
+	(condition "!A.isPlated() && A.Hole_Size_X != A.Hole_Size_Y"))
+
+(rule "JLC castellated hole"
+	(constraint hole_size (min 0.5mm))
+	(condition "A.Type == 'pad' && A.Fabrication_Property == 'Castellated pad'"))
+
+# --- Hole spacing and hole clearances -------------------------------------------------------------------------
+
+(rule "JLC via hole to hole"
+	(constraint hole_to_hole (min 0.2mm))
+	(condition "A.Type == 'via' && B.Type == 'via'"))
+
+(rule "JLC pad hole to hole"
+	(constraint hole_to_hole (min 0.45mm))
+	(condition "A.Type == 'pad' && B.Type == 'pad'"))
+
+(rule "JLC via hole to track"
+	(constraint hole_clearance (min 0.2mm))
+	(condition "A.Type == 'via' && B.Type == 'track'"))
+
+(rule "JLC plated hole to track"
+	(constraint hole_clearance (min 0.28mm))
+	(condition "A.Type == 'pad' && A.isPlated() && B.Type == 'track'"))
+# recommended 0.35mm
+
+(rule "JLC non-plated hole to track"
+	(constraint hole_clearance (min 0.2mm))
+	(condition "A.Type == 'pad' && !A.isPlated() && B.Type == 'track'"))
+
+# --- Board edge ----------------------------------------------------------------------------------------------
+
+(rule "JLC copper to routed edge"
+	(constraint edge_clearance (min 0.2mm)))
+# V-cut edge: 0.4mm
+
+# --- Silkscreen ----------------------------------------------------------------------------------------------
+
+(rule "JLC silkscreen text"
+	(constraint text_thickness (min 0.15mm))
+	(constraint text_height (min 1mm))
+	(layer "*.SilkS"))
+
+(rule "JLC pad to silkscreen"
+	(constraint silk_clearance (min 0.15mm))
+	(layer outer)
+	(condition "A.Type == 'pad' && (B.Type == 'text' || B.Type == 'graphic')"))
+
+# --- Copper pours (a choice for imported boards, not a fabrication limit) -------------------------------------
+# 0.254 mm from other nets and from holes, the EasyEDA default pour clearance: set the value measured on the board.
+# Without it the track rule above also applies between a track and a pour, and KiCad fills at that distance: pairs
+# and single tracks next to pours lose impedance (recompute with pcb-check-impedance). Keep it last.
+(rule "Copper pour clearance"
+	(constraint clearance (min 0.254mm))
+	(constraint hole_clearance (min 0.254mm))
+	(condition "A.Type == 'zone' && A.Net != B.Net"))

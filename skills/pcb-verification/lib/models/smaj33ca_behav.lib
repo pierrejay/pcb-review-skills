@@ -1,0 +1,10 @@
+* SMAJ33CA (400 W bidirectional TVS, MDD) behavioural, two back-to-back junctions.
+* Datasheet: VRWM 33 V, VBR 36.7–40.6 V at 1 mA, VC 53.3 V at IPP 7.5 A (10/1000 µs); only published clamping point.
+* Pessimistic fit: VBR max 40.6 V and a straight line up to 53.3 V at 7.5 A (the 10/1000 VC includes self-heating:
+* in 8/20 µs the real clamping is lower). Usage: XTVS a b SMAJ33CA
+* How it was checked: DC run at the published datasheet points.
+.subckt SMAJ33CA a b
+Dz1 a m DZ33
+Dz2 b m DZ33
+.model DZ33 D(IS=1n N=1.5 RS=0.77 BV=40.6 IBV=1m NBV=1 CJO=1.4n)
+.ends SMAJ33CA

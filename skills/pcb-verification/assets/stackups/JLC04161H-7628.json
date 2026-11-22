@@ -1,0 +1,69 @@
+[
+  {
+    "Type": "Copper",
+    "Thickness": 0.035
+  },
+  {
+    "Type": "Dielectric",
+    "Material": {
+      "Manufacturer": "Nan Ya Plastics",
+      "Model": "NP-155F",
+      "Construction": "7628",
+      "NominalThickness": 0.21844,
+      "ResinContent": 49,
+      "DielectricConstant": 4.4,
+      "Source": "JLCPCB impedance page (jlcpcb.com/impedance), prepreg dielectric constant 4.4, read 2026-11-15; frequency not stated",
+      "LossTangent": 0.02,
+      "GlassTransitionTemperature": 150,
+      "ExpectedLayerCount": 0,
+      "IsCore": false
+    },
+    "Thickness": 0.2104
+  },
+  {
+    "Type": "Copper",
+    "Thickness": 0.0152
+  },
+  {
+    "Type": "Dielectric",
+    "Material": {
+      "Manufacturer": "Nan Ya Plastics",
+      "Model": "NP-155F",
+      "Construction": "Core",
+      "NominalThickness": 0.71,
+      "ResinContent": 0,
+      "DielectricConstant": 4.6,
+      "Source": "JLCPCB impedance page (jlcpcb.com/impedance), core dielectric constant 4.6, read 2026-11-15; frequency not stated",
+      "LossTangent": 0.02,
+      "GlassTransitionTemperature": 150,
+      "ExpectedLayerCount": 0,
+      "IsCore": true
+    },
+    "Thickness": 1.065
+  },
+  {
+    "Type": "Copper",
+    "Thickness": 0.0152
+  },
+  {
+    "Type": "Dielectric",
+    "Material": {
+      "Manufacturer": "Nan Ya Plastics",
+      "Model": "NP-155F",
+      "Construction": "7628",
+      "NominalThickness": 0.21844,
+      "ResinContent": 49,
+      "DielectricConstant": 4.4,
+      "Source": "JLCPCB impedance page (jlcpcb.com/impedance), prepreg dielectric constant 4.4, read 2026-11-15; frequency not stated",
+      "LossTangent": 0.02,
+      "GlassTransitionTemperature": 150,
+      "ExpectedLayerCount": 0,
+      "IsCore": false
+    },
+    "Thickness": 0.2104
+  },
+  {
+    "Type": "Copper",
+    "Thickness": 0.035
+  }
+]

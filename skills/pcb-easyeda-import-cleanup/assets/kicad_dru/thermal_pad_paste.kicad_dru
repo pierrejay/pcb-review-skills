@@ -1,0 +1,20 @@
+(version 1)
+# To be pasted at the end of the project's .kicad_dru (or of the assets/kicad_template/ template).
+#
+# Thermal pad paste reduced to 64 % of the area (-10 % per side), the convention of the LCSC footprints of EasyEDA Pro.
+# 64 % is that convention, not a requirement: confirm the stencil recommendation of the package (manufacturer's
+# example stencil design) and the designer's choice. The easyeda2kicad and JLCPCB-KiCad-Library footprints put 100 %
+# paste on the pad.
+# Approximate filter: SMD pads of at least 0.9 x 0.9 mm of footprints whose reference designator starts with U
+# (QFN, DFN, SOT with thermal pad...); pins, connectors, inductors, diodes and passives stay at 100 %.
+# The scripted detection of cleanup-steps.md (step 3c: largest pad of a footprint, in proportion to the next one) is
+# the primary method; this rule is the alternative when it is wanted.
+#
+# WARNING, KiCad 10.0: solder_paste_rel_margin is written in tenths of a percent (-100 = -10 % per side).
+# "-10%" and "-0.1" are ignored without any error message. memberOfFootprint() filters on the reference designator,
+# not on the footprint name: check the list of pads the rule really hits (an inductor designated U... is hit too).
+# Check the result on the F.Paste Gerber (area of each opening) before relying on it.
+
+(rule "Thermal pad: 64 % paste"
+	(constraint solder_paste_rel_margin (opt -100))
+	(condition "A.Type == 'Pad' && A.Pad_Type == 'SMD' && A.Size_X >= 0.9mm && A.Size_Y >= 0.9mm && A.memberOfFootprint('U*')"))

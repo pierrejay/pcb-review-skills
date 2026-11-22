@@ -1,0 +1,14 @@
+{#- Macros of the verification reports: {% from "report_macros.html" import crit, figure, map_img, verdict %}
+    The labels of crit() come from report_base.TEXTS (L is passed to every template by render()). -#}
+{%- macro crit(objective, method, criterion) -%}
+<div class="crit"><div>{{ L.objective }}</div><div>{{ objective }}</div>
+{% if method %}<div>{{ L.method }}</div><div>{{ method }}</div>{% endif %}
+<div>{{ L.criterion }}</div><div>{{ criterion }}</div></div>
+{%- endmacro %}
+{%- macro figure(content, caption) -%}
+<figure>{{ content | safe }}<figcaption>{{ caption }}</figcaption></figure>
+{%- endmacro %}
+{%- macro map_img(src, caption) -%}
+<figure><img class="map" src="{{ src }}"><figcaption>{{ caption }}</figcaption></figure>
+{%- endmacro %}
+{%- macro verdict(v) -%}{{ show_verdict(v) }}{%- endmacro %}

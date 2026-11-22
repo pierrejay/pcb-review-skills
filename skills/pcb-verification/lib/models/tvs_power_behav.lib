@@ -1,0 +1,8 @@
+* Bidirectional power TVS (two back-to-back diodes), fitted on the Littelfuse 8/20 µs points (max values):
+*  SMDJ26CA    : VBR max 31.9 V; VC 54.39 V at 356.5 A (8/20)  -> model 55.7 V
+*  5.0SMDJ33CA : VBR max 40.6 V; VC 68.9 V at 704.3 A (8/20)   -> model 70.5 V
+*  SMDJ33CA    : VBR max 40.6 V; VC 68.86 V at 281.5 A (8/20, SMDJ datasheet rev. 10/29/20) -> model 70.5 V
+* How it was checked: DC run at the published datasheet points.
+.model D26_3K D(IS=1n N=1.5 RS=0.030 BV=31.9 IBV=1m NBV=4 CJO=2n)
+.model D33_3K D(IS=1n N=1.5 RS=0.049 BV=40.6 IBV=1m NBV=4 CJO=2n)
+.model D33_5K D(IS=1n N=1.5 RS=0.0195 BV=40.6 IBV=1m NBV=4 CJO=3n)
