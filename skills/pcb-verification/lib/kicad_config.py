@@ -1,6 +1,7 @@
 """Pull resistors, pin networks and decoupling capacitors seen from the pins of an IC, read with pcbnew (KiCad's
 bundled Python), as assembled in the named assembly variant (`variant`: '' for the default; required when the board
 has variants)."""
+from collections import Counter
 import re
 
 import pcbnew as P
@@ -145,13 +146,16 @@ def decoupling_rows(board, ref, rails, grounds=("GND",), near_mm=5, bulk_F=1e-6,
     thresholds near_mm, bulk_F and ferrite_bulk_F flag."""
     from values import farads
     rails, grounds = set(rails), set(grounds)
-    on_board = {p.GetNetname() for f in board.GetFootprints() for p in f.Pads()}
+    pads = Counter(p.GetNetname() for f in board.GetFootprints() for p in f.Pads())
+    on_board = set(pads)
     if rails - on_board:                         # a renamed rail would silently skip its pins
         raise ValueError(f"rails with no pad on the board: {sorted(rails - on_board)}")
     out = []
     for pin, net, parts, _ in pin_networks(board, ref, near_mm=max(near_mm, 30), crowd=0, skip=tuple(grounds),
                                            variant=variant):
-        behind = [r for r, v, other, d, dnp in parts if other in rails and r.upper().startswith(("L", "FB")) and not dnp]
+        # an inductor between two rails: the rail with fewer pads is the filtered one, the other is upstream
+        behind = [r for r, v, other, d, dnp in parts if other in rails and r.upper().startswith(("L", "FB")) and not dnp
+                  and (net not in rails or pads[other] > pads[net])]
         # behind an inductor only if the net is decoupled somewhere: a switch node (buck inductor) has no capacitor
         # to ground and is not a supply pin; a filtered supply with none at all stays visible in pin_networks
         if behind and not any(other in grounds and r.upper().startswith("C") for r, v, other, d, dnp in parts):

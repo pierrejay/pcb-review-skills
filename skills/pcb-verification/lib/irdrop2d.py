@@ -56,7 +56,8 @@ def pad_cells(a, xs, ys, d, pad):
 
 
 def solve_rail(masks, xs, ys, d, vias, source, loads, t_cu, z_mm, order, plating_m):
-    """({label: drop in V}, {"nodes", "vias_linking_layers"}). vias: [{"x", "y", "drill"}] mm; source, loads: pad
+    """({label: drop in V}, {"nodes", "vias_linking_layers", "maps"}), "maps": {layer: drop in V per cell, NaN off
+    copper and on islands} for the drop map. vias: [{"x", "y", "drill"}] mm; source, loads: pad
     dicts {"x", "y", "w", "h", "layer", "outline"} (`kicad_copper.rail_pad`), loads also "amps" (≥ 0, drawn) and a
     unique "label"; t_cu: {layer: m}; z_mm: {layer: mm}; order: layers top to bottom; plating_m: via plating (m)."""
     if not loads:
@@ -125,4 +126,9 @@ def solve_rail(masks, xs, ys, d, vias, source, loads, t_cu, z_mm, order, plating
     bad = sorted(label for label, x in drops.items() if not math.isfinite(x))
     if bad:
         raise ValueError(f"drop not finite for {bad}: the mesh or its conductances are wrong")
-    return drops, {"nodes": int(n), "vias_linking_layers": int(linking)}
+    maps = {}
+    for l, a in idx.items():
+        m = np.full(a.shape, np.nan)
+        m[a >= 0] = np.where(reached[a[a >= 0]], -v[a[a >= 0]], np.nan)
+        maps[l] = m
+    return drops, {"nodes": int(n), "vias_linking_layers": int(linking), "maps": maps}

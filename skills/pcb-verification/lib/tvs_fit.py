@@ -110,10 +110,10 @@ def track_nh(length_mm, nh_per_mm=0.6):
     return float(length_mm) * float(nh_per_mm)
 
 
-def return_path_nh(track_mm, via_h_mm=None, via_d_mm=None, vias=None):
-    """Ground return of a protection (nH): track plus `vias` identical vias in series (one when the via geometry is
-    given without a count)."""
-    total = track_nh(track_mm)
+def return_path_nh(track_mm, via_h_mm=None, via_d_mm=None, vias=None, nh_per_mm=0.6):
+    """Ground return of a protection (nH): track at `nh_per_mm` (as `track_nh`) plus `vias` identical vias in series
+    (one when the via geometry is given without a count)."""
+    total = track_nh(track_mm, nh_per_mm)
     if via_h_mm is None and via_d_mm is None:
         if vias is not None:
             raise ValueError(f"vias={vias!r} given without the via length and hole diameter")

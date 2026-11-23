@@ -84,8 +84,8 @@ the source, or an API that imposes its unit.
    as such. Give each result to the designer when it is done and wait for the answer before the next study. A model
    that fails twice gives way to a simpler one that bounds the result, or the topic is incomplete with what is
    missing, and the designer is told.
-8. **After any change to the board**: `make all`, compare with the previous results, explain every number that
-   moved.
+8. **After any change to the board or a new version of the skills**: `make all`, compare with the previous results,
+   explain every number that moved.
 9. **Report**: update `VERIFICATION.md`; the structured results and a readable summary are the deliverable, the
    PDF (`pcb-verification-report`) is their presentation when one is wanted. For every unknown that decides a
    verdict, the measurement is specified: where to probe, in which conditions, with which instrument, and the
