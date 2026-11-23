@@ -30,7 +30,7 @@
       "Manufacturer": "Nan Ya Plastics",
       "Model": "NP-155F",
       "Construction": "Core",
-      "NominalThickness": 0.71,
+      "NominalThickness": 1.265,
       "ResinContent": 0,
       "DielectricConstant": 4.6,
       "Source": "JLCPCB impedance page (jlcpcb.com/impedance), core dielectric constant 4.6, read 2026-11-15; frequency not stated",

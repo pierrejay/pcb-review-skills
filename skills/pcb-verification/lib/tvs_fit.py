@@ -7,6 +7,7 @@ import math
 VT = 0.02585            # thermal voltage, V, 300 K
 RHO_CU = 1.7e-8         # Ω·m
 CV_CU = 3.45e6          # J/(m³·K)
+ALPHA_CU = 0.00393      # 1/K, ρ = ρ0 (1 + α ΔT)
 I2T_FACTOR_8_20 = 0.7   # ∫i²dt ≈ 0.7 · Ipk² · T50 for an 8/20 µs wave (estimate)
 T50_8_20_S = 20e-6
 
@@ -126,10 +127,11 @@ def i2t_8_20(i_peak, t50=T50_8_20_S, k=I2T_FACTOR_8_20):
     return float(k) * float(i_peak) ** 2 * float(t50)
 
 
-def adiabatic_heating(i2t, width_mm, t_m, rho=RHO_CU, cv=CV_CU):
-    """Temperature rise (K) of a track carrying ∫i²dt with no time to cool: ΔT = ρ ∫i²dt / (A² cv), A = width × t_m."""
+def adiabatic_heating(i2t, width_mm, t_m, rho=RHO_CU, cv=CV_CU, alpha=ALPHA_CU):
+    """Temperature rise (K) of a track carrying ∫i²dt with no time to cool, ρ rising with T (Onderdonk):
+    ΔT = (exp(α ρ ∫i²dt / (A² cv)) − 1) / α, A = width × t_m."""
     a = float(width_mm) * 1e-3 * float(t_m)
-    return float(rho) * float(i2t) / (a * a * float(cv))
+    return math.expm1(float(alpha) * float(rho) * float(i2t) / (a * a * float(cv))) / float(alpha)
 
 
 def adiabatic_rise_k(i_pk_a, width_mm, thickness_um, t50_s=T50_8_20_S, i2t_factor=I2T_FACTOR_8_20):

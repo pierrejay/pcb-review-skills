@@ -31,11 +31,11 @@ _EIA_LOW = {"X": -55, "Y": -30, "Z": 10}
 _EIA_HIGH = {"2": 45, "4": 65, "5": 85, "6": 105, "7": 125, "8": 150, "9": 200}
 _CLASS2 = re.compile(r"[XYZ][2456789][PRSTUV]")
 _CLASS1 = {"C0G": (-55, 125), "NP0": (-55, 125)}
-_PREFIX = {"": 1.0, "p": 1e-12, "n": 1e-9, "u": 1e-6, "µ": 1e-6, "m": 1e-3, "k": 1e3, "M": 1e6}
+_PREFIX = {"": 1.0, "p": 1e-12, "n": 1e-9, "u": 1e-6, "µ": 1e-6, "μ": 1e-6, "m": 1e-3, "k": 1e3, "M": 1e6}
 _UNITS = {"V": "v", "W": "w", "Ω": "ohm", "Ω": "ohm", "F": "f", "A": "a", "H": "h"}
-_RATING = re.compile(r"(?<![A-Za-z0-9./])(\d+(?:\.\d+)?(?:/\d+(?:\.\d+)?)?)([pnuµmkM]?)(V|W|Ω|Ω|F|A|H)(?![A-Za-z])")
+_RATING = re.compile(r"(?<![A-Za-z0-9./])(\d+(?:\.\d+)?(?:/\d+(?:\.\d+)?)?)([pnuµμmkM]?)(V|W|Ω|Ω|F|A|H)(?![A-Za-z])")
 _TEMP = re.compile(r"(-?\d+)\s*℃\s*~\s*\+?(-?\d+)\s*℃")
-_V_RANGE = re.compile(r"(?<![A-Za-z0-9./])(\d+(?:\.\d+)?)([pnuµmkM]?)V\s*~\s*(\d+(?:\.\d+)?)([pnuµmkM]?)V(?![A-Za-z])")
+_V_RANGE = re.compile(r"(?<![A-Za-z0-9./])(\d+(?:\.\d+)?)([pnuµμmkM]?)V\s*~\s*(\d+(?:\.\d+)?)([pnuµμmkM]?)V(?![A-Za-z])")
 _TOL = re.compile(r"±\s*(\d+(?:\.\d+)?)\s*%")
 _DIELECTRIC = re.compile(r"\b(" + _CLASS2.pattern + "|" + "|".join(_CLASS1) + r")\b")
 

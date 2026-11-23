@@ -50,12 +50,13 @@ def solve(kt, mask, d, h_top, h_bot, power):
 
 
 def jedec_2s2p(d=0.5e-3):
-    """(kt, mask, nx, ny) of the JESD51-7 2s2p board: 114.3 × 76.2 × 1.6 mm, two full 35 µm inner planes, 70 µm outer
-    faces at 5 % coverage."""
+    """(kt, mask, nx, ny) of the JESD51-7 2s2p board: 114.3 × 76.2 × 1.6 mm, two 35 µm inner planes of 74.2 × 74.2 mm
+    centred on the part, 70 µm outer faces at 5 % coverage."""
     nx, ny = int(114.3e-3 / d), int(76.2e-3 / d)
     mask = np.ones((nx, ny), dtype=bool)
-    cover = {"top": np.full((nx, ny), 0.05), "p1": np.ones((nx, ny)), "p2": np.ones((nx, ny)),
-             "bot": np.full((nx, ny), 0.05)}
+    x, y = (np.arange(nx) + 0.5) * d, (np.arange(ny) + 0.5) * d
+    plane = ((abs(x - 57.15e-3) <= 37.1e-3)[:, None] & (abs(y - 38.1e-3) <= 37.1e-3)[None, :]).astype(float)
+    cover = {"top": np.full((nx, ny), 0.05), "p1": plane, "p2": plane, "bot": np.full((nx, ny), 0.05)}
     kt = sheet_kt(cover, {"top": 70e-6, "p1": 35e-6, "p2": 35e-6, "bot": 70e-6}, 1.6e-3)
     return kt, mask, nx, ny
 

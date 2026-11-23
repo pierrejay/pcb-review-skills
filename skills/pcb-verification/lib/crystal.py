@@ -8,7 +8,7 @@ C_PAD_DEFAULT = 0.3         # pF per pad, estimate
 C_PIN_DEFAULT = 2.0         # pF per IC pin, estimate (5 to 6 pF on some parts)
 C_PP_DEFAULT = 0.3          # pF between the two pins, estimate
 C1_DEFAULT_PF = 0.004       # 4 fF, 3.2 × 2.5 mm fundamental crystal, estimate
-C0G_SERIES_PF = (15, 18, 20, 22, 24, 27)
+C0G_SERIES_PF = (4.7, 5.6, 6.8, 8.2, 10, 12, 15, 18, 20, 22, 24, 27, 33, 39, 47)
 GAIN_MARGIN = 5             # rule of thumb from oscillator application notes, screening default
 
 
