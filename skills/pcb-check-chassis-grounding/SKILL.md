@@ -88,7 +88,8 @@ No strategy is right by default; the designer's scope gives the candidates.
    (shields and shells on ground included, enclosure, screws), plugged cables and positions near a limit or on
    request. A tie component fitted on the board is present in every position (a capacitor across a jumper is not
    an option once soldered); magnetics and isolators carry their inter-winding capacitance, and a termination that
-   ends on a shell or shield net goes to the net the board gives it. The defaults of the model are estimates,
+   ends on a shell or shield net goes to the net the board gives it. The line IC's pins are probed: a discharge on a
+   shell reaches them through the termination and the inter-winding capacitance. The defaults of the model are estimates,
    replaced by the board's values where known.
 3b. **Surge on a shield or shell tied to ground through a capacitor** (combination wave applied to the shield
    itself, at the level of the scope, ground first held to earth by another path; the margin level and the other
@@ -133,7 +134,7 @@ No strategy is right by default; the designer's scope gives the candidates.
 - Surface distances in air between chassis and ground copper against the clearances of IEC 60664-1 for a transient
   overvoltage (indicative values: `iec60664.clearance_f2`; `pcb-check-isolation`) when the two can be separated.
   Those clearances are given for a 1.2/50 µs impulse; under a discharge of a few nanoseconds they are a screening
-  value (`verdict_threshold(…, screening=…)`). A gap below it is a possible flashover, which ties chassis to ground
+  value (`report_base.verdict_threshold(…, screening=…)`). A gap below it is a possible flashover, which ties chassis to ground
   at that point once the voltage has built up: the direct tie at that position, which never lets it build up, does
   not bound it. It is a finding when that tie fails or the scope needs chassis and ground kept apart, and otherwise
   a reservation with a pre-compliance shot, unless the arc's transient is bounded.

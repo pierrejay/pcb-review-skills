@@ -121,7 +121,7 @@ widen only where it does not conclude; a long sweep is proposed to the designer 
    without a DC path a 100 MΩ–1 GΩ leak.
 2. `run(name, upk, **options)`: write the netlist and run it with `spice.run` (`pcb-verification/lib/spice.py`),
    the launcher of every netlist of the check, `measures` naming the `.meas` of the quantities the verdict reads: a
-   probe judged on its peak, the `MAX` of a B source `V=abs(v(x))`; a rail, its maximum and its minimum, each
+   probe judged on its peak, its `MAX` and its `MIN` (a difference through a unity E source); a rail, its maximum and its minimum, each
    against its bound. The `.dat` is kept only for the cases a figure reads (`toolchain.md`, Disk). `wrdata` writes
    (time, value) pairs: quantity k is column 2k + 1.
    Surge, kind "slow": `.options method=gear reltol=1e-3 abstol=1n vntol=10u itl4=200`, `.tran 5n 120u 0 20n`. ESD
@@ -154,8 +154,8 @@ widen only where it does not conclude; a long sweep is proposed to the designer 
    time spent beyond a limit, on |v| (`tvs_fit.time_beyond`): a 0.1 ns overshoot and a 200 ns one are not the same
    finding.
 4. Verdict per case: `ratio[k] = metric[k] / limit[k]`; worst key = max ratio; fail if > 1, except on a screening
-   limit (the injection test, the HBM rating): above it the case is to be measured (`verdict_threshold(…,
-   screening=…)`), the stress located, not a fail. A limit with a duration ("up to 32 V, less than 1 ns beyond
+   limit (the injection test, the HBM rating): above it the case is to be measured
+   (`report_base.verdict_threshold(…, screening=…)`), the stress located, not a fail. A limit with a duration ("up to 32 V, less than 1 ns beyond
    30 V") is two keys, the peak against 32 V and `time_beyond(t, v, 30)` against 1 ns, both in the verdict. At or
    below 1, the kind of each limit decides: a case whose deciding limits are screening estimates is a reservation,
    or a pass * when the designer accepts the estimate (`../SKILL.md`, "Criteria"), never a plain pass; a plain pass

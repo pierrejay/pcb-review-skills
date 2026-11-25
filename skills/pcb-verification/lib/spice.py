@@ -68,6 +68,8 @@ def _once(text, cir, workdir, limit, tstop, measures):
             got[m.group(1).lower()] = math.nan
     bad = [ln.strip() for ln in out.splitlines() if _DECK.search(ln) and not _BENIGN.search(ln)]
     hard = [ln for ln in bad if _HARD.search(ln)]
+    if tstop is not None:  # a transient starts from a DC point: a node without one is an error of the deck
+        hard += [ln.strip() for ln in out.splitlines() if "check node" in ln]
     if hard:
         return "deck", hard[0][:160], out
     if tstop is not None and not got.get(TLAST, -math.inf) >= tstop * (1 - 1e-6):

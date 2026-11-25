@@ -110,8 +110,8 @@ a surge); for nanosecond events, the IC's HBM rating as a peak current (V_HBM / 
 edge rate, the internal path and the IC's own protection, and a component-level ESD rating does not predict the
 robustness of the system. They rank protections and locate the stress. A distance to a threshold whose uncertainty
 is not bounded does not establish survival, however wide, and an excess over it does not establish a failure: a
-verdict that rests on these estimates is never a plain pass nor a fail (`verdict_threshold(…, screening=…)`: to be
-measured above, a reservation below). Below it is a reservation with the measurement to make, or, when the margin is
+verdict that rests on these estimates is never a plain pass nor a fail (`report_base.verdict_threshold(…,
+screening=…)`: to be measured above, a reservation below). Below it is a reservation with the measurement to make, or, when the margin is
 comfortable and the designer explicitly accepts the estimate as an assumption, a pass * (`pcb-verification`, "What a
 verdict means"). Survival is concluded only from transient data for that pin (the manufacturer's system-level or TLP
 figures) or from a test. Under an agreed criterion, the excess over the limit it relaxes is still reported.
